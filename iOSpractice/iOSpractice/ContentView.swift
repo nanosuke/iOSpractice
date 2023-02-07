@@ -26,7 +26,13 @@ struct ContentView: View {
     longitudinalMeters: 1000.0 // 東西距離
   )
   
+  // managerの更新を観測
+  @ObservedObject var manager = locationManager()
+  // ユーザートラッキングモード
+  @State var trackingMode = MapUserTrackingMode.follow // 現在地をトラッキングするモード
+  
   var body: some View {
+    /*
     // 地図を表示する
     Map(coordinateRegion: $region,
         annotationItems: spotlist,
@@ -35,9 +41,14 @@ struct ContentView: View {
                     anchorPoint: CGPoint(x: 0.5, y: 0.5),
                     content: {
         Image(systemName: "house.fill").foregroundColor(.pink)
-        Text(spot.name).italic()
+        Text(spot.name).italic() // 表示するイメージやテキスト
       })}
       ).edgesIgnoringSafeArea(.bottom) // bottomのセーフティエリアを無視して表示
+     */
+    
+    // 現在地を追従する地図を表示する
+    Map(coordinateRegion: $manager.region, showsUserLocation: true, userTrackingMode: $trackingMode)
+      .edgesIgnoringSafeArea(.bottom)
   }
 }
 
@@ -55,5 +66,38 @@ struct Spot: Identifiable {
   let longitude: Double
   var coordinate: CLLocationCoordinate2D {
     CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+  }
+}
+
+// 現在地を取得するためのクラス
+class locationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
+  // ロケーションマネージャを作る
+  let manager = CLLocationManager()
+  // 領域の更新をパブリッシュする
+  @Published var region = MKCoordinateRegion()
+  
+  override init() {
+    super.init() // 先にスーパークラスのイニシャライザ
+    manager.delegate = self // デリゲートの設定
+    manager.requestWhenInUseAuthorization() // プライバシー設定の確認
+    manager.desiredAccuracy = kCLLocationAccuracyBest
+    manager.distanceFilter = 2 // 更新距離(m)
+    manager.startUpdatingLocation() // 追従を開始
+  }
+  
+  //領域の更新
+  func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    // locationの最後の要素に対して実行
+    locations.last.map{ // 現在地を取得
+      let center = CLLocationCoordinate2D(
+        latitude: $0.coordinate.latitude,
+        longitude: $0.coordinate.longitude)
+      //領域の更新
+      region = MKCoordinateRegion(
+        center: center,
+        latitudinalMeters: 100.0,
+        longitudinalMeters: 100.0
+      )
+    }
   }
 }
