@@ -13,7 +13,9 @@ struct ContentView: View {
   let spotlist = [
     Spot(name: "丸善", latitude: 35.6834843, longitude: 139.7644207),
     Spot(name: "八重洲ブックセンター", latitude: 35.6790079, longitude: 139.7675881),
-    Spot(name: "出光美術館", latitude: 35.6780057, longitude: 139.7631035)
+    Spot(name: "出光美術館", latitude: 35.6780057, longitude: 139.7631035),
+    Spot(name: "シエスタハコダテ", latitude: 41.7898026, longitude:  140.7519897),
+    Spot(name: "公立はこだて未来大学", latitude: 41.8421184, longitude: 140.7669209)
   ]
   
   // 座標と領域を指定する
@@ -33,29 +35,37 @@ struct ContentView: View {
   
   var body: some View {
     /*
-    // 地図を表示する
-    Map(coordinateRegion: $region,
-        annotationItems: spotlist,
-        annotationContent: { spot in
-      MapAnnotation(coordinate: spot.coordinate,
-                    anchorPoint: CGPoint(x: 0.5, y: 0.5),
-                    content: {
-        Image(systemName: "house.fill").foregroundColor(.pink)
-        Text(spot.name).italic() // 表示するイメージやテキスト
-      })}
-      ).edgesIgnoringSafeArea(.bottom) // bottomのセーフティエリアを無視して表示
+     // 地図を表示する
+     Map(coordinateRegion: $region,
+     annotationItems: spotlist,
+     annotationContent: { spot in
+     MapAnnotation(coordinate: spot.coordinate,
+     anchorPoint: CGPoint(x: 0.5, y: 0.5),
+     content: {
+     Image(systemName: "house.fill").foregroundColor(.pink)
+     Text(spot.name).italic() // 表示するイメージやテキスト
+     })}
+     ).edgesIgnoringSafeArea(.bottom) // bottomのセーフティエリアを無視して表示
      */
     
     // 現在地を追従する地図を表示する
-    Map(coordinateRegion: $manager.region, showsUserLocation: true, userTrackingMode: $trackingMode)
-      .edgesIgnoringSafeArea(.bottom)
+    Map(coordinateRegion: $manager.region,
+        showsUserLocation: true,
+        userTrackingMode: $trackingMode,
+        annotationItems: spotlist,
+        annotationContent: { spot in MapAnnotation(coordinate: spot.coordinate, anchorPoint: CGPoint(x: 0.5, y: 0.5),
+                                                   content: {
+          Image(systemName: "house.fill").foregroundColor(.pink)
+          Text(spot.name).italic()
+        })})
+    .edgesIgnoringSafeArea(.bottom)
   }
 }
 
 struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
+  static var previews: some View {
+    ContentView()
+  }
 }
 
 // スポットの構造体
