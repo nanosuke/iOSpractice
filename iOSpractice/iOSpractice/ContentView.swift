@@ -59,6 +59,17 @@ struct ContentView: View {
           Text(spot.name).italic()
         })})
     .edgesIgnoringSafeArea(.bottom)
+    
+    /*
+    Button(action:{}){
+      Text("ボタン")
+        .font(.largeTitle)
+        .frame(width: 280, height: 60, alignment: .center)
+        .foregroundColor(Color.white)
+        .background(Color.pink)
+        .cornerRadius(15, antialiased: true)
+    }
+    */
   }
 }
 
@@ -111,3 +122,27 @@ class locationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
   }
 }
+
+/* 練習
+var num:Int{
+ let result = 2 * 5
+ return result
+ }
+// print(num)
+ 
+var radius = 10.0
+var num2:Double{
+  get{
+    let length = 2 * radius * Double.pi
+    return length
+  }
+  set(length){
+    radius = length / (2 * Double.pi)
+  }
+}
+ 
+var body:some View{ // 値を代入しないリードオンリーの変数
+ return Text("Hello, World!")
+  .padding()
+}
+*/
