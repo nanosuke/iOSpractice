@@ -48,7 +48,7 @@ struct ContentView: View {
      ).edgesIgnoringSafeArea(.bottom) // bottomのセーフティエリアを無視して表示
      */
     
-    // 現在地を追従する地図を表示する
+    // 現在地を追従する地図を表示する/*
     Map(coordinateRegion: $manager.region,
         showsUserLocation: true,
         userTrackingMode: $trackingMode,
